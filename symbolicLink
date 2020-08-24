@@ -1,0 +1,30 @@
+#!/usr/bin/env sh
+# Author: gitneeraj
+# Description: symblink bulk files in folders
+
+DEFAULT_SOURCE_PATH=/home/neeraj/Personal/opensource/bar-scripts/*
+DEFAULT_DES_PATH=/usr/local/bin
+
+read -p "Enter path to files to be symlinked ($DEFAULT_SOURCE_PATH): " SOURCE_PATH
+
+if [ ! -z "$SOURCE_PATH" ]; then
+    FULL_SOURCE_PATH="${SOURCE_PATH:(-2)}"
+    [ "$FULL_SOURCE_PATH" != "/*" ] && SOURCE_PATH=$SOURCE_PATH/*
+fi
+
+SOURCE_PATH=${SOURCE_PATH:-$DEFAULT_SOURCE_PATH}
+
+read -p "Enter destination path ($DEFAULT_DES_PATH): " DES_PATH
+DES_PATH=${DES_PATH:-$DEFAULT_DES_PATH}
+
+echo "Creating symbolic link for: ";
+for FILE in $SOURCE_PATH; do 
+
+    if [ -x "$FILE" ]; then
+        echo -e "\t- $(basename -- $FILE)"
+        ln -sf $FILE $DES_PATH
+    else
+        echo -e "\t- $FILE is not executable"
+    fi
+done
+echo "Done"
